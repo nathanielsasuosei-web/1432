@@ -27,6 +27,7 @@ A full-featured website for a music producer where:
 | `/beats` | Full catalog with search & genre filters |
 | `/videos` | Producer videos / tutorials grid |
 | `/login`, `/signup` | Artist authentication |
+| `/login?next=/admin` | Producer / Admin login; opens the upload dashboard |
 | `/checkout/[beatId]` | Secure checkout with **MoMo** & **Bank** tabs |
 | `/dashboard` | Artist library — purchased beats, download links |
 | `/admin` | Admin panel (role-gated) to upload beats & videos |
@@ -60,6 +61,7 @@ npm run dev
 Then open http://localhost:3000
 
 ### Demo accounts
+- Use **Producer / Admin login** in the navigation (or mobile menu) to open the admin sign-in form. The producer uses the admin account; public signup creates artist accounts only.
 - **Admin:** `admin@beatforge.com` / `admin123`
 - **Artist:** sign up on `/signup` (any email/password works)
 

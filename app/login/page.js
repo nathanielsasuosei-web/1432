@@ -21,8 +21,6 @@ export default function LoginPage() {
             </div>
             <span className="font-display font-bold text-2xl">BeatForge</span>
           </Link>
-          <h1 className="font-display font-bold text-3xl mt-6">Welcome back</h1>
-          <p className="text-white/60 mt-2 text-sm">Log in to your artist account.</p>
         </div>
 
         {/* LoginForm reads useSearchParams(), which must stay inside a Suspense
