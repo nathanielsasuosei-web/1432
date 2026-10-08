@@ -40,7 +40,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden lg:flex items-center gap-1">
           {links.map(l => {
             const active = pathname === l.href
             const Icon = l.icon
@@ -60,19 +60,14 @@ export default function Navbar() {
               </Link>
             )
           })}
-          {user?.role === 'admin' && (
-            <Link href="/admin"
-              className={"relative px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5 " +
-                (pathname.startsWith('/admin') ? "text-white" : "text-gold-400 hover:text-gold-300")}>
-              {pathname.startsWith('/admin') && (
-                <motion.span layoutId="nav-pill" className="absolute inset-0 bg-gold-500/15 rounded-full" transition={{ type: 'spring', bounce: .2, duration: .5 }}/>
-              )}
-              <Upload className="w-4 h-4 relative" /><span className="relative">Upload</span>
-            </Link>
-          )}
+          <Link href={user?.role === 'admin' ? '/admin' : '/login?next=/admin'}
+            className="px-3 py-2 rounded-full text-sm font-medium text-gold-400 hover:text-gold-300 flex items-center gap-1.5">
+            <Upload className="w-4 h-4" />
+            {user?.role === 'admin' ? 'Producer / Admin' : 'Producer / Admin login'}
+          </Link>
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3">
           {loading ? null : user ? (
             <div className="flex items-center gap-2">
               <Link href="/dashboard" className="btn-outline py-2 px-4 text-sm">
@@ -95,23 +90,24 @@ export default function Navbar() {
           )}
         </div>
 
-        <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
+        <button aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} className="lg:hidden p-2" onClick={() => setOpen(!open)}>
           {open ? <X className="w-6 h-6"/> : <Menu className="w-6 h-6"/>}
         </button>
       </nav>
 
       {open && (
         <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }}
-          className="md:hidden px-4 pb-4 space-y-2">
+          className="lg:hidden px-4 pb-4 space-y-2">
           {links.map(l => (
             <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
               className="block px-4 py-2 rounded-lg hover:bg-white/10 text-white/80">
               {l.label}
             </Link>
           ))}
-          {user?.role === 'admin' && (
-            <Link href="/admin" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-white/10 text-gold-400">Upload (Admin)</Link>
-          )}
+          <Link href={user?.role === 'admin' ? '/admin' : '/login?next=/admin'} onClick={() => setOpen(false)}
+            className="block px-4 py-2 rounded-lg hover:bg-white/10 text-gold-400">
+            {user?.role === 'admin' ? 'Producer / Admin dashboard' : 'Producer / Admin login'}
+          </Link>
           {user ? (
             <>
               <Link href="/dashboard" onClick={() => setOpen(false)} className="block px-4 py-2 rounded-lg hover:bg-white/10">Dashboard</Link>
