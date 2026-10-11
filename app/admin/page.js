@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/AuthContext'
 import { useToast } from '@/components/Toast'
-import { Upload as UploadIcon, Music, Video as VideoIcon, Trash2, Loader2, Plus } from 'lucide-react'
+import BookingInbox from '@/components/BookingInbox'
+import { Upload as UploadIcon, Music, Video as VideoIcon, Trash2, Loader2, Plus, CalendarCheck } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function AdminPage() {
@@ -13,6 +14,7 @@ export default function AdminPage() {
   const [tab, setTab] = useState('beats')
   const [beats, setBeats] = useState([])
   const [videos, setVideos] = useState([])
+  const [bookingStats, setBookingStats] = useState(null)
 
   // beat form
   const [b, setB] = useState({ title:'', genre:'Trap', bpm:140, key:'C min', price:29.99, duration:'3:00', cover:'', tags:'' })
@@ -30,6 +32,23 @@ export default function AdminPage() {
   useEffect(() => {
     if (!loading && (!user || user.role !== 'admin')) router.replace('/login?next=/admin')
   }, [user, loading, router])
+
+  // Keep the "Bookings" badge fresh even while the producer is on other tabs
+  useEffect(() => {
+    if (!user || user.role !== 'admin') return
+    let stop = false
+    async function poll() {
+      try {
+        const res = await fetch('/api/admin/bookings', { cache: 'no-store' })
+        if (!res.ok) return
+        const data = await res.json()
+        if (!stop) setBookingStats({ total: data.length, pending: data.filter(b => b.status === 'pending').length })
+      } catch {}
+    }
+    poll()
+    const t = setInterval(poll, 30000)
+    return () => { stop = true; clearInterval(t) }
+  }, [user])
 
   async function uploadBeat(e) {
     e.preventDefault()
@@ -84,8 +103,8 @@ export default function AdminPage() {
     <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
       <div className="mb-8">
         <span className="tag border-gold-400/40 bg-gold-500/10 text-gold-300 mb-3">⚡ Admin panel</span>
-        <h1 className="font-display font-bold text-4xl">Upload & manage content</h1>
-        <p className="text-white/60 mt-2">Add new beats and videos. They go live instantly.</p>
+        <h1 className="font-display font-bold text-4xl">Manage your studio</h1>
+        <p className="text-white/60 mt-2">Upload beats & videos, and manage booking orders — new bookings land here <em className="text-gold-300 not-italic font-medium">and on your WhatsApp</em> instantly.</p>
       </div>
 
       <div className="flex gap-2 mb-6">
@@ -99,8 +118,21 @@ export default function AdminPage() {
             (tab==='videos' ? "bg-white text-dark-900" : "border border-white/15 text-white/70 hover:text-white")}>
           <VideoIcon className="w-4 h-4"/> Videos ({videos.length})
         </button>
+        <button onClick={()=>setTab('bookings')}
+          className={"px-5 py-2 rounded-full text-sm font-medium transition flex items-center gap-2 " +
+            (tab==='bookings' ? "bg-white text-dark-900" : "border border-white/15 text-white/70 hover:text-white")}>
+          <CalendarCheck className="w-4 h-4"/> Bookings
+          {bookingStats && bookingStats.pending > 0 && (
+            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-gold-500 text-dark-900 text-xs font-bold">
+              {bookingStats.pending}
+            </span>
+          )}
+        </button>
       </div>
 
+      {tab === 'bookings' ? (
+        <BookingInbox onStats={setBookingStats} />
+      ) : (
       <div className="grid lg:grid-cols-5 gap-6">
         {/* Upload form */}
         <div className="lg:col-span-2">
@@ -202,6 +234,7 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+      )}
     </section>
   )
 }

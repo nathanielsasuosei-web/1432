@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/AuthContext'
 import { motion } from 'framer-motion'
-import { Music, Headphones, Video, User, LogOut, LayoutDashboard, Upload, Menu, X } from 'lucide-react'
+import { Music, Headphones, Video, User, LogOut, LayoutDashboard, Upload, Menu, X, CalendarHeart } from 'lucide-react'
 import { useState } from 'react'
 
 export default function Navbar() {
@@ -16,6 +16,7 @@ export default function Navbar() {
     { href: '/', label: 'Home' },
     { href: '/beats', label: 'Beats', icon: Headphones },
     { href: '/videos', label: 'Videos', icon: Video },
+    { href: '/book', label: 'Book Me', icon: CalendarHeart },
   ]
 
   async function handleLogout() {
@@ -47,7 +48,7 @@ export default function Navbar() {
             return (
               <Link key={l.href} href={l.href}
                 className={"relative px-4 py-2 rounded-full text-sm font-medium transition-colors " +
-                  (active ? "text-white" : "text-white/70 hover:text-white")}>
+                  (active ? "text-white" : l.href === '/book' ? "text-gold-400 hover:text-gold-300 font-semibold" : "text-white/70 hover:text-white")}>
                 {active && (
                   <motion.span layoutId="nav-pill"
                     className="absolute inset-0 bg-white/10 rounded-full"
@@ -100,7 +101,8 @@ export default function Navbar() {
           className="lg:hidden px-4 pb-4 space-y-2">
           {links.map(l => (
             <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
-              className="block px-4 py-2 rounded-lg hover:bg-white/10 text-white/80">
+              className={"block px-4 py-2 rounded-lg hover:bg-white/10 " +
+                (l.href === '/book' ? "text-gold-400 font-semibold" : "text-white/80")}>
               {l.label}
             </Link>
           ))}

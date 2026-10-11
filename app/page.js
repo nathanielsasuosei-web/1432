@@ -3,7 +3,7 @@ import BeatCard from '@/components/BeatCard'
 import PlayerBar from '@/components/PlayerBar'
 import { getBeats } from '@/lib/store'
 import Link from 'next/link'
-import { ArrowRight, PlayCircle, TrendingUp, Users, Headphones, Award } from 'lucide-react'
+import { ArrowRight, PlayCircle, TrendingUp, Users, Headphones, Award, MessageCircle, Music2, Wand2, Headphones as Mix } from 'lucide-react'
 
 export default function HomePage() {
   const beats = getBeats().slice(0, 6)
@@ -70,6 +70,44 @@ export default function HomePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Book the producer */}
+      <section id="book" className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div className="relative rounded-3xl overflow-hidden p-8 md:p-12 glass border border-brand-400/30">
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-700/30 via-transparent to-gold-500/10" />
+          <div className="relative grid lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <span className="tag mb-3">🎛 Work with me</span>
+              <h2 className="font-display font-bold text-4xl">Want something custom? Book a session</h2>
+              <p className="text-white/60 mt-3 max-w-md">
+                Tell me about your project — custom beats, full productions, mixing or a studio session.
+                Your booking order lands on my dashboard <em className="text-gold-300 not-italic font-medium">and my WhatsApp instantly</em>, so I can get back to you fast.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link href="/book" className="btn-gold">
+                  <MessageCircle className="w-4 h-4" /> Book a session
+                </Link>
+                <Link href="/beats" className="btn-outline">
+                  Browse beats <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              {[
+                { icon: Music2, title: 'Custom beat', desc: 'Built around your style & references' },
+                { icon: Wand2,  title: 'Full production', desc: 'Beat to final master, end to end' },
+                { icon: Mix,   title: 'Mix & master', desc: 'Radio-ready sound for your track' },
+              ].map(s => (
+                <div key={s.title} className="card text-center !p-4">
+                  <s.icon className="w-6 h-6 text-gold-400 mx-auto mb-2" />
+                  <p className="font-semibold text-sm">{s.title}</p>
+                  <p className="text-xs text-white/50 mt-1">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
